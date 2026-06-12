@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# =============================================
+# FREE FIRE GUEST ACCOUNT GENERATOR
+# Guest01 Edition - Versi Improved
+# Untuk Xiyemy Ganteng
+# =============================================
+
+clear
+echo "========================================"
+echo "   FREE FIRE GUEST ACCOUNT GENERATOR"
+echo "             GUEST01 v2"
+echo "========================================"
+echo ""
+
+termux-setup-storage &> /dev/null
+
+# Deteksi folder Free Fire
+FF_PATHS=(
+    "/sdcard/Android/data/com.garena.game.ff"
+    "/sdcard/Android/data/com.garena.freefire"
+    "/sdcard/Android/data/com.garena.freefireth"
+    "/sdcard/Android/data/com.garena.freefiremax"
+)
+
+FF_FOLDER=""
+for path in "${FF_PATHS[@]}"; do
+    if [ -d "$path" ]; then
+        FF_FOLDER="$path"
+        echo "✅ Free Fire ditemukan: $path"
+        break
+    fi
+done
+
+if [ -z "$FF_FOLDER" ]; then
+    echo "❌ Folder Free Fire tidak ditemukan!"
+    exit 1
+fi
+
+FILES_DIR="$FF_FOLDER/files"
+
+echo ""
+echo "=== MENU GUEST01 ==="
+echo "1. Buat Guest Baru (Auto Guest0X)"
+echo "2. Lihat Semua Guest Tersimpan"
+echo "3. Restore Guest Tertentu"
+echo "4. Backup Guest Sekarang"
+echo "5. Keluar"
+echo -n "Pilih nomor (1-5): "
+read pilihan
+
+case $pilihan in
+    1)
+        echo "🔄 Membuat Guest Account baru..."
+        
+        # Hitung guest berikutnya
+        LAST_NUM=$(ls "$FF_FOLDER" 2>/dev/null | grep -E "Guest0[0-9]+" | wc -l)
+        NEW_NUM=$((LAST_NUM + 1))
+        GUEST_NAME="Guest0$NEW_NUM"
+        
+        if [ -d "$FILES_DIR" ]; then
+            mv "$FILES_DIR" "\( FF_FOLDER/ \){GUEST_NAME}_$(date +%Y%m%d_%H%M%S)"
+            echo "✅ Guest lama dibackup"
+        fi
+        
+        mkdir -p "$FILES_DIR"
+        
+        # Clear cache biar lebih smooth
+        rm -rf "$FF_FOLDER/cache" 2>/dev/null
+        
+        echo "🎉 Berhasil membuat $GUEST_NAME !"
+        echo "Buka Free Fire → Login sebagai Guest"
+        ;;
+    
+    2)
+        echo "📋 Daftar Guest Tersimpan:"
+        ls "$FF_FOLDER" 2>/dev/null | grep -E "Guest0[0-9]+"
+        echo ""
+        ;;
+    
+    3)
+        echo "📋 Daftar Guest:"
+        ls "$FF_FOLDER" 2>/dev/null | grep -E "Guest0[0-9]+"
+        echo -n "Masukkan nama folder Guest yang mau di-restore: "
+        read backup_name
+        
+        if [ -d "$FF_FOLDER/$backup_name" ]; then
+            rm -rf "$FILES_DIR"
+            mv "$FF_FOLDER/$backup_name" "$FILES_DIR"
+            echo "✅ Berhasil restore $backup_name !"
+        else
+            echo "❌ Guest tidak ditemukan"
+        fi
+        ;;
+    
+    4)
+        if [ -d "$FILES_DIR" ]; then
+            mv "$FILES_DIR" "\( FF_FOLDER/Guest01_backup_ \)(date +%Y%m%d_%H%M%S)"
+            echo "✅ Backup berhasil!"
+        else
+            echo "❌ Tidak ada data guest saat ini"
+        fi
+        ;;
+    
+    5)
+        echo "Keluar dari Guest01..."
+        exit 0
+        ;;
+    
+    *)
+        echo "❌ Pilihan tidak valid!"
+        ;;
+esac
+
+echo ""
+echo "Script selesai. Semoga banyak Guest GG 🔥"
