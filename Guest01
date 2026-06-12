@@ -2,14 +2,14 @@
 
 # =============================================
 # FREE FIRE GUEST ACCOUNT GENERATOR
-# Guest01 Edition - Versi Improved
+# Guest01 Edition - Versi Fixed & Improved
 # Untuk Xiyemy Ganteng
 # =============================================
 
 clear
 echo "========================================"
 echo "   FREE FIRE GUEST ACCOUNT GENERATOR"
-echo "             GUEST01 v2"
+echo "             GUEST01 v2.1 (Fixed)"
 echo "========================================"
 echo ""
 
@@ -60,12 +60,12 @@ case $pilihan in
         
         if [ -d "$FILES_DIR" ]; then
             mv "$FILES_DIR" "\( FF_FOLDER/ \){GUEST_NAME}_$(date +%Y%m%d_%H%M%S)"
-            echo "✅ Guest lama dibackup"
+            echo "✅ Guest lama dibackup sebagai $GUEST_NAME"
         fi
         
         mkdir -p "$FILES_DIR"
         
-        # Clear cache biar lebih smooth
+        # Clear cache
         rm -rf "$FF_FOLDER/cache" 2>/dev/null
         
         echo "🎉 Berhasil membuat $GUEST_NAME !"
